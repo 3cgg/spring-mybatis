@@ -25,19 +25,22 @@
 package me.libme.module.spring.mybatis;
 
 import org.apache.ibatis.session.SqlSessionFactory;
+import org.mybatis.spring.SqlSessionFactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import javax.sql.DataSource;
 import java.util.List;
 
-@Configuration
+@org.springframework.context.annotation.Configuration
+@ConditionalOnClass({ SqlSessionFactory.class, SqlSessionFactoryBean.class })
+@ConditionalOnBean(DataSource.class)
 @EnableConfigurationProperties(MybatisCPPProperties.class)
 @AutoConfigureAfter(org.mybatis.spring.boot.autoconfigure.MybatisAutoConfiguration.class)
-@Component
 public class MybatisCPPAutoConfiguration {
 
 
