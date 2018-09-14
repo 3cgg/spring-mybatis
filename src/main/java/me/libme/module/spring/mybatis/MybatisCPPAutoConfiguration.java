@@ -31,6 +31,7 @@ import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Bean;
 
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
@@ -71,5 +72,48 @@ public class MybatisCPPAutoConfiguration {
             sqlSessionFactory.getConfiguration().addInterceptor(interceptor);
         }
     }
+
+    @Bean
+    public _DefaultEntityOnDelete defaultEntityOnDelete(){
+        return new _DefaultEntityOnDelete();
+    }
+
+
+    @Bean
+    public _DefaultEntityOnSave defaultEntityOnSave(){
+        return new _DefaultEntityOnSave();
+    }
+
+    @Bean
+    public _DefaultEntityOnUpdate defaultEntityOnUpdate(){
+        return new _DefaultEntityOnUpdate();
+    }
+
+
+    @Bean
+    public MybatisSingleAccessAspect mybatisSingleAccessAspect(){
+        return new MybatisSingleAccessAspect();
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 }

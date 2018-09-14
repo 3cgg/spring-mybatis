@@ -8,17 +8,12 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
-import org.springframework.stereotype.Component;
 
 @Aspect
-@Component
-@Order(value= MybatisSingleAccessAspect.ORDER_NUMBER)
+@Order(value= 0)
 public class MybatisSingleAccessAspect {
 
-	public static final int ORDER_NUMBER= Ordered.LOWEST_PRECEDENCE+100;
-	
 	private static final Logger LOGGER = LoggerFactory.getLogger(MybatisSingleAccessAspect.class);
 
 	@Autowired
