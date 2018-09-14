@@ -10,7 +10,7 @@
     </parent>
 
     <groupId>libme.modules</groupId>
-    <artifactId>lib-spring-mybatis</artifactId>
+    <artifactId>mybatis</artifactId>
     <version>1.0.1</version>
 
     <properties>
