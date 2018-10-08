@@ -34,7 +34,7 @@ import java.util.List;
  * @author J
  */
 @ConfigurationProperties(prefix = "cpp.mybatis")
-public class MybatisCPPProperties {
+public class MybatisCppProperties {
 
     private List<String> classNames;
 

@@ -37,12 +37,11 @@ import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 import java.util.List;
 
-@org.springframework.context.annotation.Configuration
 @ConditionalOnClass({ SqlSessionFactory.class, SqlSessionFactoryBean.class })
 @ConditionalOnBean(DataSource.class)
-@EnableConfigurationProperties(MybatisCPPProperties.class)
+@EnableConfigurationProperties(MybatisCppProperties.class)
 @AutoConfigureAfter(org.mybatis.spring.boot.autoconfigure.MybatisAutoConfiguration.class)
-public class MybatisCPPAutoConfiguration {
+public class MybatisCppAutoConfiguration {
 
 
     private List<SqlSessionFactory> sqlSessionFactoryList;
@@ -52,10 +51,10 @@ public class MybatisCPPAutoConfiguration {
         this.sqlSessionFactoryList = sqlSessionFactoryList;
     }
 
-    private MybatisCPPProperties properties;
+    private MybatisCppProperties properties;
 
     @Autowired
-    public void setProperties(MybatisCPPProperties properties) {
+    public void setProperties(MybatisCppProperties properties) {
         this.properties = properties;
     }
 
