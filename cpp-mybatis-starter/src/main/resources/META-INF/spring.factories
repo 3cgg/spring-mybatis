@@ -1,2 +1,2 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-me.libme.module.spring.mybatis.MybatisCppAutoConfiguration
+#org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+#me.libme.module.spring.mybatis.MybatisCppAutoConfiguration

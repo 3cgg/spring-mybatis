@@ -64,6 +64,12 @@ public class MybatisPageInterceptor implements Interceptor {
 
     private String countSuffix = "_COUNT";
 
+    private final MybatisDialect mybatisDialect;
+
+    public MybatisPageInterceptor(MybatisDialect mybatisDialect) {
+        this.mybatisDialect = mybatisDialect;
+    }
+
     @Override
     public Object intercept(Invocation invocation) throws Throwable {
         try {
@@ -99,12 +105,10 @@ public class MybatisPageInterceptor implements Interceptor {
                     count = executeAutoCount(executor, countMs, parameter, boundSql, rowBounds, resultHandler);
                 }
 
-                MySql mySql=new MySql();
-
-                String pageSql = mySql.pageSql(ms, boundSql, parameter, rowBounds, cacheKey);
+                String pageSql = mybatisDialect.pageSql(ms, boundSql, parameter, rowBounds, cacheKey);
 
                 // set new pageable parameters
-                Map<String,Object> pageParam=mySql.pageSqlParameter(ms, boundSql,parameter,rowBounds,cacheKey,count,pageable);
+                Map<String,Object> pageParam=mybatisDialect.pageSqlParameter(ms, boundSql,parameter,rowBounds,cacheKey,count,pageable);
                 BoundSql pageBoundSql = new BoundSql(configuration, pageSql, boundSql.getParameterMappings(), pageParam);
                 pageParam.entrySet().stream().forEach(
                         (entry)-> pageBoundSql.setAdditionalParameter(entry.getKey(),entry.getValue()));

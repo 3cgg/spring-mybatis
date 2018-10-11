@@ -46,15 +46,6 @@ spring:
  # type-aliases-package: com.winterchen.model  # 注意：对应实体类的路径
 
 
-#cpp:
-#  mybatis:
-#    discovery-enable : true
-#    classNames:
-#      - me.libme.scc.usernew.repo.UserRepo
-#      - me.libme.scc.usernew.repo.UserOtherRepo
-
-
-
 logging:
   level:
      -org : debug

@@ -63,7 +63,8 @@ public class MybatisCppAutoConfiguration {
 
     @PostConstruct
     public void addPageInterceptor() {
-        MybatisPageInterceptor interceptor = new MybatisPageInterceptor();
+        DialectSelector dialectSelector=new DialectSelector();
+        MybatisPageInterceptor interceptor = new MybatisPageInterceptor(dialectSelector.find());
         for (SqlSessionFactory sqlSessionFactory : sqlSessionFactoryList) {
             sqlSessionFactory.getConfiguration().addInterceptor(interceptor);
         }
