@@ -16,8 +16,8 @@ public interface MybatisDialect {
 
     String pageSql(MappedStatement ms, BoundSql boundSql, Object parameterObject, RowBounds rowBounds, CacheKey pageKey);
 
-
     Map<String,Object> pageSqlParameter(MappedStatement ms, BoundSql boundSql, Object parameterObject, RowBounds rowBounds, CacheKey cacheKey, Long count, JPageable pageable);
 
+    String versionSql(MappedStatement ms,BoundSql boundSql,Object parameterObject);
 
 }

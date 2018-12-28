@@ -22,16 +22,18 @@
  * THE SOFTWARE.
  */
 
-package me.libme.module.spring.mybatis;
+package me.libme.module.spring.mybatis.fn.pq;
 
 import me.libme.kernel._c._m.JPage;
 import me.libme.kernel._c._m.JPageUtil;
 import me.libme.kernel._c._m.JPageable;
+import me.libme.module.spring.mybatis.MybatisDialect;
 import me.libme.module.spring.mybatis.sql.CountSqlParser;
 import org.apache.ibatis.cache.CacheKey;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
+import org.apache.ibatis.mapping.ResultMap;
 import org.apache.ibatis.plugin.*;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.ResultHandler;
@@ -101,7 +103,7 @@ public class MybatisPageInterceptor implements Interceptor {
                 if(countMs != null){
                     count = executeManualCount(executor, countMs, parameter, boundSql, resultHandler);
                 }else {
-                    countMs = MybatisUtil.newCountMappedStatement(ms, countMsId);
+                    countMs = newCountMappedStatement(ms, countMsId);
                     count = executeAutoCount(executor, countMs, parameter, boundSql, rowBounds, resultHandler);
                 }
 
@@ -214,6 +216,35 @@ public class MybatisPageInterceptor implements Interceptor {
             //ignore
         }
         return mappedStatement;
+    }
+
+    private MappedStatement newCountMappedStatement(MappedStatement ms, String newMsId) {
+        MappedStatement.Builder builder = new MappedStatement.Builder(ms.getConfiguration(), newMsId, ms.getSqlSource(), ms.getSqlCommandType());
+        builder.resource(ms.getResource());
+        builder.fetchSize(ms.getFetchSize());
+        builder.statementType(ms.getStatementType());
+        builder.keyGenerator(ms.getKeyGenerator());
+        if (ms.getKeyProperties() != null && ms.getKeyProperties().length != 0) {
+            StringBuilder keyProperties = new StringBuilder();
+            for (String keyProperty : ms.getKeyProperties()) {
+                keyProperties.append(keyProperty).append(",");
+            }
+            keyProperties.delete(keyProperties.length() - 1, keyProperties.length());
+            builder.keyProperty(keyProperties.toString());
+        }
+        builder.timeout(ms.getTimeout());
+        builder.parameterMap(ms.getParameterMap());
+        //count查询返回值int
+        List<ResultMap> resultMaps = new ArrayList<>();
+        ResultMap resultMap = new ResultMap.Builder(ms.getConfiguration(), ms.getId(), Long.class, new ArrayList()).build();
+        resultMaps.add(resultMap);
+        builder.resultMaps(resultMaps);
+        builder.resultSetType(ms.getResultSetType());
+        builder.cache(ms.getCache());
+        builder.flushCacheRequired(ms.isFlushCacheRequired());
+        builder.useCache(ms.isUseCache());
+
+        return builder.build();
     }
 
 }

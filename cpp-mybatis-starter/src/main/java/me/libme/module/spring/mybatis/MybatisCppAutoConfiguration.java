@@ -24,6 +24,11 @@
 
 package me.libme.module.spring.mybatis;
 
+import me.libme.module.spring.mybatis.fn.pq.MybatisPageInterceptor;
+import me.libme.module.spring.mybatis.fn.vc.OptimisticLockerInterceptor;
+import me.libme.module.spring.mybatis.fn.vc.SimpleUpdateSqlValidator;
+import me.libme.module.spring.mybatis.fn.vc.UpdateSqlValidator;
+import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +47,8 @@ public class MybatisCppAutoConfiguration {
 
 
     private List<SqlSessionFactory> sqlSessionFactoryList;
+
+    @Autowired UpdateSqlValidator updateSqlValidator;
 
     @Autowired
     public void setSqlSessionFactoryList(List<SqlSessionFactory> sqlSessionFactoryList) {
@@ -64,9 +71,13 @@ public class MybatisCppAutoConfiguration {
     @PostConstruct
     public void addPageInterceptor() {
         DialectSelector dialectSelector=new DialectSelector();
-        MybatisPageInterceptor interceptor = new MybatisPageInterceptor(dialectSelector.find());
+        MybatisDialect dialect=dialectSelector.find();
+        MybatisPageInterceptor interceptor = new MybatisPageInterceptor(dialect);
+        OptimisticLockerInterceptor optimisticLockerInterceptor=new OptimisticLockerInterceptor(dialect,updateSqlValidator);
         for (SqlSessionFactory sqlSessionFactory : sqlSessionFactoryList) {
-            sqlSessionFactory.getConfiguration().addInterceptor(interceptor);
+            Configuration configuration=sqlSessionFactory.getConfiguration();
+            configuration.addInterceptor(interceptor);
+            configuration.addInterceptor(optimisticLockerInterceptor);
         }
     }
 
@@ -93,7 +104,10 @@ public class MybatisCppAutoConfiguration {
     }
 
 
-
+    @Bean
+    public SimpleUpdateSqlValidator simpleUpdateSqlValidator(){
+        return new SimpleUpdateSqlValidator();
+    }
 
 
 
