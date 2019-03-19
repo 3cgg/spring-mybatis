@@ -1,5 +1,8 @@
 package me.libme.module.spring.mybatis;
 
+import me.libme.kernel._c.util.JStringUtils;
+import me.libme.kernel._c.util.JUniqueUtils;
+
 import java.util.Date;
 
 /**
@@ -16,6 +19,10 @@ public class _DefaultEntityOnSave implements EntityOnSaveListener {
         entityModel.set_update_id(authorizer.getId());
         entityModel.set_update_time(new Date());
         entityModel.set_deleted("N");
+
+        if(JStringUtils.isNullOrEmpty(entityModel.get_id())){
+            entityModel.set_id(JUniqueUtils.unique());
+        }
         
     }
 

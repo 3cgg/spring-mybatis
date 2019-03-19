@@ -35,6 +35,8 @@ import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.ResultMap;
 import org.apache.ibatis.plugin.*;
+import org.apache.ibatis.reflection.MetaObject;
+import org.apache.ibatis.reflection.SystemMetaObject;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
@@ -112,6 +114,12 @@ public class MybatisPageInterceptor implements Interceptor {
                 // set new pageable parameters
                 Map<String,Object> pageParam=mybatisDialect.pageSqlParameter(ms, boundSql,parameter,rowBounds,cacheKey,count,pageable);
                 BoundSql pageBoundSql = new BoundSql(configuration, pageSql, boundSql.getParameterMappings(), pageParam);
+
+                MetaObject metaObject = SystemMetaObject.forObject(boundSql);
+                Map<String,Object> additionalParameters=(Map<String, Object>)metaObject.getValue("additionalParameters");
+                additionalParameters.entrySet().stream().forEach(
+                        (entry)-> pageBoundSql.setAdditionalParameter(entry.getKey(),entry.getValue()));
+
                 pageParam.entrySet().stream().forEach(
                         (entry)-> pageBoundSql.setAdditionalParameter(entry.getKey(),entry.getValue()));
                 List list = executor.query(ms, parameter, RowBounds.DEFAULT, resultHandler, cacheKey, pageBoundSql);
@@ -184,6 +192,12 @@ public class MybatisPageInterceptor implements Interceptor {
 
         //countKey.update(countSql);
         BoundSql countBoundSql = new BoundSql(countMs.getConfiguration(), countSql, boundSql.getParameterMappings(), parameter);
+
+        MetaObject metaObject = SystemMetaObject.forObject(boundSql);
+        Map<String,Object> additionalParameters= (Map<String, Object>) metaObject.getValue("additionalParameters");
+        additionalParameters.entrySet().stream().forEach(
+                (entry)-> countBoundSql.setAdditionalParameter(entry.getKey(),entry.getValue()));
+
 
         //执行 count 查询
         Object countResultList = executor.query(countMs, parameter, RowBounds.DEFAULT, resultHandler, countKey, countBoundSql);
